@@ -13,5 +13,7 @@ RSpec.describe BitmapEditor do
   ]}
 
   it { expect(BitmapEditor.new.calculate('examples/show.txt').bitmap).to eq expected_output }
-  it { expect(BitmapEditor.new.calculate('examples/unknownshow.txt')).to eq 'please provide correct file' }
+  it { expect { BitmapEditor.new.calculate('examples/unknownshow.txt') }.to raise_error(ArgumentError) }
+  it { expect(BitmapEditor.new.calculate('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
+
 end
