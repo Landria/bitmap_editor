@@ -12,10 +12,23 @@ RSpec.describe BitmapEditor do
     ['O','W','O','O','O']
   ]}
 
-  it { expect(BitmapEditor::Processor.new.calculate('examples/show.txt').bitmap).to eq expected_output }
-  it { expect { BitmapEditor::Processor.new.calculate('examples/unknownshow.txt') }.to raise_error(ArgumentError) }
-  it { expect(BitmapEditor::Processor.new.calculate('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
-  it { expect { BitmapEditor::Processor.new.calculate('examples/unknow_command.txt') }.to raise_error(ArgumentError) }
-  it { expect { BitmapEditor::Processor.new.calculate('examples/wrong_command_args.txt') }.to raise_error(ArgumentError) }
-  it { expect { BitmapEditor::Processor.new.calculate('examples/wrong_commands_args_type.txt') }.to_not raise_error }
+  it { expect(BitmapEditor::Processor.new.run('examples/show.txt').bitmap).to eq expected_output }
+
+  it 'shows argument error message when file is not exists' do
+    expect(STDOUT).to receive(:puts).with('ArgumentError: Please provide correct file')
+    BitmapEditor::Processor.new.run('examples/unknownshow.txt')
+  end
+
+  it { expect(BitmapEditor::Processor.new.run('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
+
+  it  'ignores unknown instructions' do
+    expect(BitmapEditor::Processor.new.run('examples/unknown_command.txt').bitmap).to eq expected_output
+  end
+
+  it 'shows argument error when command has wrong args count' do
+    expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
+    BitmapEditor::Processor.new.run('examples/wrong_command_args.txt')
+  end
+
+  it { expect { BitmapEditor::Processor.new.run('examples/wrong_command_args_type.txt') }.to_not raise_error }
 end

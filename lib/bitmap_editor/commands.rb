@@ -22,6 +22,14 @@ module BitmapEditor
 
     DEFAULT_COLOR = 'O'
 
+    def show_bitmap
+      bitmap.each do |line|
+        puts line.join('')
+      end
+    end
+
+    private
+
     def draw_bitmap(args)
       rows, cols = args[0].to_i, args[1].to_i
       @bitmap = Array.new(cols){ Array.new(rows, DEFAULT_COLOR) }
@@ -57,15 +65,9 @@ module BitmapEditor
         bitmap[y][x] = color
       end
     end
-  
-    def show_bitmap
-      bitmap.each do |line|
-        puts line.join('')
-      end
-    end
 
     def command_valid?(command, args)
-      args.count == COMMAND_ARGS_RESTRICTIONS[command]
+      command && args.count == COMMAND_ARGS_RESTRICTIONS[command]
     end
   end
 end
