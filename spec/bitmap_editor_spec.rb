@@ -12,8 +12,7 @@ RSpec.describe BitmapEditor do
     ['O','W','O','O','O']
   ]}
 
-  it { expect(BitmapEditor.new.calculate('examples/show.txt').bitmap).to eq expected_output }
-  it { expect { BitmapEditor.new.calculate('examples/unknownshow.txt') }.to raise_error(ArgumentError) }
-  it { expect(BitmapEditor.new.calculate('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
-
+  it { expect(BitmapEditor::Processor.new.calculate('examples/show.txt').bitmap).to eq expected_output }
+  it { expect { BitmapEditor::Processor.new.calculate('examples/unknownshow.txt') }.to raise_error(ArgumentError) }
+  it { expect(BitmapEditor::Processor.new.calculate('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
 end
