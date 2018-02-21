@@ -21,7 +21,7 @@ RSpec.describe BitmapEditor do
 
   it { expect(BitmapEditor::Processor.new.run('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
 
-  it  'ignores unknown instructions' do
+  it 'ignores unknown instructions' do
     expect(BitmapEditor::Processor.new.run('examples/unknown_command.txt').bitmap).to eq expected_output
   end
 

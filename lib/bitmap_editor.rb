@@ -19,7 +19,7 @@ module BitmapEditor
       self
     rescue ArgumentError => e
       puts "ArgumentError: #{e.message}"
-    rescue Exception => e
+    rescue NoMethodError => e
       puts "Unexpected exception: #{e.message}"
     ensure
       self
@@ -28,15 +28,15 @@ module BitmapEditor
     private
 
     def check_file(file)
-      raise(ArgumentError, "Please provide correct file") if file.nil? || !File.exists?(file)
+      raise(ArgumentError, 'Please provide correct file') if file.nil? || !File.exist?(file)
     end
 
     def perform(line)
       args = line.split(/\s/)
-      if command = COMMANDS[args.shift]
-        raise(ArgumentError, 'Check file instructions') unless command_valid?(command, args)
-        args.empty? ? send(command) : send(command, args)
-      end
+      command = COMMANDS[args.shift]
+      return unless command
+      raise(ArgumentError, 'Check file instructions') unless command_valid?(command, args)
+      args.empty? ? send(command) : send(command, args)
     end
   end
 end
