@@ -27,6 +27,14 @@ RSpec.describe BitmapEditor do
     expect(BitmapEditor::Processor.new.run('examples/only_s_command.txt').bitmap).to eq([])
   end
 
+  it 'shows when overrun coords for horizontal line passed' do
+    expect(BitmapEditor::Processor.new.run('examples/overrun_h.txt').bitmap).to eq expected_output
+  end
+
+  it 'shows when overrun coords for vertical line passed' do
+    expect(BitmapEditor::Processor.new.run('examples/overrun_v.txt').bitmap).to eq expected_output
+  end
+
   context 'argument error' do
     it 'when file is not exists' do
       expect(STDOUT).to receive(:puts).with('ArgumentError: Please provide correct file')
@@ -56,16 +64,6 @@ RSpec.describe BitmapEditor do
     it 'when unknown command passed' do
       expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions for bitmap size')
       BitmapEditor::Processor.new.run('examples/larger_bitmap.txt')
-    end
-
-    it 'when wrong coord for horizontal line passed' do
-      expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
-      BitmapEditor::Processor.new.run('examples/overrun_h.txt')
-    end
-
-    it 'when wrong coord for vertical line passed' do
-      expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
-      BitmapEditor::Processor.new.run('examples/overrun_v.txt')
     end
 
     it 'when wrong pixel coords passed' do

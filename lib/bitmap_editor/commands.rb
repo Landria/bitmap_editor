@@ -21,6 +21,7 @@ module BitmapEditor
     }.freeze
 
     DEFAULT_COLOR = 'O'
+    MAX_DIM = 250
 
     def show
       bitmap.each do |line|
@@ -33,7 +34,7 @@ module BitmapEditor
     def init(args)
       @cols = args[0].to_i
       @rows = args[1].to_i
-      raise(ArgumentError, 'Check file instructions for bitmap size') if rows > 250 || cols > 250
+      raise(ArgumentError, 'Check file instructions for bitmap size') if rows > MAX_DIM || cols > MAX_DIM
 
       @bitmap = Array.new(rows) { Array.new(cols, DEFAULT_COLOR) }
     end
@@ -65,9 +66,9 @@ module BitmapEditor
       (coords[0]..coords[1]).each do |coord2|
         case type
         when :horizontal
-          bitmap[coord1][coord2] = color
+          bitmap[coord1][coord2] = color if bitmap[coord1] && bitmap[coord1][coord2]
         when :vertical
-          bitmap[coord2][coord1] = color
+          bitmap[coord2][coord1] = color if bitmap[coord2] && bitmap[coord2][coord1]
         end
       end
     end
@@ -83,21 +84,18 @@ module BitmapEditor
       else
         args.count == COMMAND_ARGS_RESTRICTIONS[command] && \
           args.last == args.last.upcase && \
-          coordinates_valid?(command, args.map(&:to_i))
+          coordinates_valid?(command, args)
       end
     end
 
     def coordinates_valid?(command, args)
-      case command
-      when :pixel
-        (1..cols).cover?(args[0]) && (1..rows).cover?(args[1])
-      when :vertial_line
-        (1..cols).cover?(args[0]) && (1..rows).cover?(args[1]) && (1..rows).cover?(args[2])
-      when :horizontal_line
-        (1..cols).cover?(args[0]) && (1..cols).cover?(args[1]) && (1..rows).cover?(args[2])
-      else
-        true
+      condition = []
+
+      args.map(&:to_i).take(COMMAND_ARGS_RESTRICTIONS[command] - 1).each do |coord|
+        condition << "(1..MAX_DIM).cover?(#{coord})"
       end
+      
+      eval(condition.join(' && '))
     end
   end
 end
