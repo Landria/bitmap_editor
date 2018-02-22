@@ -5,9 +5,13 @@ require_relative 'bitmap_editor/commands'
 module BitmapEditor
   class Processor
 
-    attr_accessor :bitmap
+    attr_accessor :bitmap, :rows, :cols
 
     include BitmapEditor::Commands
+
+    def initialize
+      @bitmap = []
+    end
 
     def run(file)
       check_file(file)
@@ -34,7 +38,6 @@ module BitmapEditor
     def perform(line)
       args = line.split(/\s/)
       command = COMMANDS[args.shift]
-      return unless command
       raise(ArgumentError, 'Check file instructions') unless command_valid?(command, args)
       args.empty? ? send(command) : send(command, args)
     end

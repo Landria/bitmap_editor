@@ -31,9 +31,11 @@ module BitmapEditor
     private
 
     def init(args)
-      rows = args[0].to_i
-      cols = args[1].to_i
-      @bitmap = Array.new(cols) { Array.new(rows, DEFAULT_COLOR) }
+      @cols = args[0].to_i
+      @rows = args[1].to_i
+      raise(ArgumentError, 'Check file instructions for bitmap size') if rows > 250 || cols > 250
+
+      @bitmap = Array.new(rows) { Array.new(cols, DEFAULT_COLOR) }
     end
 
     def clear
@@ -41,37 +43,61 @@ module BitmapEditor
     end
 
     def pixel(args)
-      bitmap_x = args[0].to_i
-      bitmap_y = args[1].to_i
-      color    = args[2]
+      color = args.pop
+      coords = prepare_coordinates(args)
 
-      bitmap[bitmap_y - 1][bitmap_x - 1] = color
+      bitmap[coords[1]][coords[0]] = color
     end
 
     def vertial_line(args)
-      x = args[0].to_i - 1
-      y1 = args[1].to_i - 1
-      y2 = args[2].to_i - 1
-      color = args[3]
-
-      (y1..y2).each do |y|
-        bitmap[y][x] = color
-      end
+      draw_line(args, :vertical)
     end
 
     def horizontal_line(args)
-      x1 = args[0].to_i - 1
-      x2 = args[1].to_i - 1
-      y = args[2].to_i - 1
-      color = args[3]
+      draw_line(args, :horizontal)
+    end
 
-      (x1..x2).each do |x|
-        bitmap[y][x] = color
+    def draw_line(args, type)
+      color = args.pop
+      coord1 = args.send(type == :horizontal ? :pop : :shift).to_i - 1
+      coords = prepare_coordinates(args).sort
+
+      (coords[0]..coords[1]).each do |coord2|
+        case type
+        when :horizontal
+          bitmap[coord1][coord2] = color
+        when :vertical
+          bitmap[coord2][coord1] = color
+        end
       end
     end
 
+    def prepare_coordinates(args)
+      args.map(&:to_i).map { |coord| coord - 1 }
+    end
+
     def command_valid?(command, args)
-      command && args.count == COMMAND_ARGS_RESTRICTIONS[command]
+      case command
+      when :init, :show, :clear
+        args.count == COMMAND_ARGS_RESTRICTIONS[command]
+      else
+        args.count == COMMAND_ARGS_RESTRICTIONS[command] && \
+          args.last == args.last.upcase && \
+          coordinates_valid?(command, args.map(&:to_i))
+      end
+    end
+
+    def coordinates_valid?(command, args)
+      case command
+      when :pixel
+        (1..cols).cover?(args[0]) && (1..rows).cover?(args[1])
+      when :vertial_line
+        (1..cols).cover?(args[0]) && (1..rows).cover?(args[1]) && (1..rows).cover?(args[2])
+      when :horizontal_line
+        (1..cols).cover?(args[0]) && (1..cols).cover?(args[1]) && (1..rows).cover?(args[2])
+      else
+        true
+      end
     end
   end
 end
