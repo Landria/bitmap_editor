@@ -23,7 +23,7 @@ RSpec.describe BitmapEditor do
 
   it { expect { BitmapEditor::Processor.new.run('examples/wrong_command_args_type.txt') }.to_not raise_error }
 
-  it 'shows empty bitmap is only S command passed' do
+  it 'empty bitmap when only S command passed' do
     expect(BitmapEditor::Processor.new.run('examples/only_s_command.txt').bitmap).to eq([])
   end
 
@@ -33,6 +33,10 @@ RSpec.describe BitmapEditor do
 
   it 'shows when overrun coords for vertical line passed' do
     expect(BitmapEditor::Processor.new.run('examples/overrun_v.txt').bitmap).to eq expected_output
+  end
+
+  it 'empty bitmap when empty file passed' do
+    expect(BitmapEditor::Processor.new.run('examples/empty.txt').bitmap).to eq([])
   end
 
   context 'argument error' do
@@ -69,6 +73,11 @@ RSpec.describe BitmapEditor do
     it 'when wrong pixel coords passed' do
       expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
       BitmapEditor::Processor.new.run('examples/wrong_coords.txt')
+    end
+
+    it 'when incorrect file passed' do
+      expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
+      BitmapEditor::Processor.new.run('examples/text.txt')
     end
   end
 end

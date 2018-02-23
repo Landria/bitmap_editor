@@ -1,0 +1,6 @@
+The existing two-stage approval seems to have solved a lot of customisation requests.
+
+But I still get a few from people with this type of request: ‘I want my Finance Director to give second approval on all requests over £5000 but otherwise I just need single approval’.
+
+One possible implementation might be on the ‘Two stage approval’ settings page to just add a cost threshold there. But I welcome your suggestions and input on this idea.
+S
