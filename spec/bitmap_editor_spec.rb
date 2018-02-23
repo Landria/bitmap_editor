@@ -14,29 +14,51 @@ RSpec.describe BitmapEditor do
     ].freeze
   end
 
+  let(:expected_initial_output) do
+    [
+      ['O', 'O', 'O', 'O', 'O'],
+      ['O', 'O', 'O', 'O', 'O'],
+      ['O' ,'O', 'O', 'O', 'O'],
+      ['O', 'O', 'O', 'O', 'O'],
+      ['O', 'O', 'O', 'O', 'O'],
+      ['O', 'O', 'O', 'O', 'O']
+    ].freeze
+  end
+
   it { expect(BitmapEditor::Processor.new.run('examples/show.txt').bitmap).to eq expected_output }
+
+  # handles duplicate init instrauction (last init instruction apllyed)
+  it { expect(BitmapEditor::Processor.new.run('examples/two_inits.txt').bitmap).to eq expected_output }
 
   # Handle wrong coords range for lines
   it { expect(BitmapEditor::Processor.new.run('examples/flip_coords.txt').bitmap).to eq expected_output }
 
   it { expect(BitmapEditor::Processor.new.run('examples/clear_bitmap.txt').bitmap.flatten.uniq).to eq ['O'] }
 
+  it { expect(BitmapEditor::Processor.new.run('examples/no_changes.txt').bitmap).to eq expected_initial_output}
+
   it { expect { BitmapEditor::Processor.new.run('examples/wrong_command_args_type.txt') }.to_not raise_error }
 
-  it 'empty bitmap when only S command passed' do
-    expect(BitmapEditor::Processor.new.run('examples/only_s_command.txt').bitmap).to eq([])
-  end
-
-  it 'shows when overrun coords for horizontal line passed' do
+  it 'shows correct bitmap when overrun coords for horizontal line passed' do
     expect(BitmapEditor::Processor.new.run('examples/overrun_h.txt').bitmap).to eq expected_output
   end
 
-  it 'shows when overrun coords for vertical line passed' do
+  it 'shows correct bitmap when overrun coords for vertical line passed' do
     expect(BitmapEditor::Processor.new.run('examples/overrun_v.txt').bitmap).to eq expected_output
   end
 
-  it 'empty bitmap when empty file passed' do
-    expect(BitmapEditor::Processor.new.run('examples/empty.txt').bitmap).to eq([])
+  context 'empty bitmap' do
+    it 'when only S command passed' do
+      expect(BitmapEditor::Processor.new.run('examples/only_s_command.txt').bitmap).to eq([[]])
+    end
+
+    it 'when no init instructions given' do
+      expect(BitmapEditor::Processor.new.run('examples/without_init.txt').bitmap).to eq([[]])
+    end
+
+    it 'when empty file passed' do
+      expect(BitmapEditor::Processor.new.run('examples/empty.txt').bitmap).to eq([[]])
+    end
   end
 
   context 'argument error' do

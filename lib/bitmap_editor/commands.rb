@@ -47,7 +47,7 @@ module BitmapEditor
       color = args.pop
       coords = prepare_coordinates(args)
 
-      bitmap[coords[1]][coords[0]] = color
+      bitmap[coords[1]][coords[0]] = color if bitmap[coords[1]] && bitmap[coords[1]][coords[0]]
     end
 
     def vertial_line(args)
@@ -94,7 +94,7 @@ module BitmapEditor
       args.map(&:to_i).take(COMMAND_ARGS_RESTRICTIONS[command] - 1).each do |coord|
         condition << "(1..MAX_DIM).cover?(#{coord})"
       end
-      
+
       eval(condition.join(' && '))
     end
   end

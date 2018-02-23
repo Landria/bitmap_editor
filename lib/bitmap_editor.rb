@@ -10,7 +10,9 @@ module BitmapEditor
     include BitmapEditor::Commands
 
     def initialize
-      @bitmap = []
+      @bitmap = [[]]
+      @rows = 1
+      @cols = 1
     end
 
     def run(file)
