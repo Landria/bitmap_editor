@@ -101,5 +101,10 @@ RSpec.describe BitmapEditor do
       expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
       BitmapEditor::Processor.new.run('examples/text.txt')
     end
+
+    it 'when color command is not a single character' do
+      expect(STDOUT).to receive(:puts).with('ArgumentError: Check file instructions')
+      BitmapEditor::Processor.new.run('examples/non_single_color.txt')
+    end
   end
 end

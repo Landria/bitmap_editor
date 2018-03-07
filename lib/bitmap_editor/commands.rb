@@ -83,7 +83,7 @@ module BitmapEditor
         args.count == COMMAND_ARGS_RESTRICTIONS[command]
       else
         args.count == COMMAND_ARGS_RESTRICTIONS[command] && \
-          args.last == args.last.upcase && \
+          args.last =~ /\A[A-Z]\Z/ && \
           coordinates_valid?(command, args)
       end
     end
